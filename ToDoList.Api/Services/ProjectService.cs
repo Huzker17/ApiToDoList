@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,9 +14,9 @@ namespace ToDoList.Core.Services
         {
             _db = db;
         }
-        public async Task<IEnumerable<ToDoItem>> GetAllTasks()
+        public async Task<IEnumerable<Project>> GetAllTasks()
         {
-            return await _db.Tasks.ToListAsync();
+            return await _db.Projects.ToListAsync();
 
         }
         
