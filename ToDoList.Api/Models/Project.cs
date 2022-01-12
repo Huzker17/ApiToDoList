@@ -12,6 +12,7 @@ namespace ToDoList.Api.Models
         public string Description { get; set; }
         public DateTime CreationTime { get; set; }
         public DateTime DueTime { get; set; }
+        public ProjectStatus Status { get; set; }
     }
     public enum ProjectStatus
     {

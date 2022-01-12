@@ -3,96 +3,99 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ToDoList.Api.Interfaces;
 using ToDoList.Api.Models;
+using ToDoList.Api.ViewModels;
 
 namespace ToDoList.Core.Services
 {
-    public class ProjectService
+    public class ProjectService : IProjectService
     {
         private readonly ApplicationDbContext _db;
         public ProjectService(ApplicationDbContext db)
         {
             _db = db;
         }
-        public async Task<IEnumerable<Project>> GetAllTasks()
+        public async Task<IEnumerable<Project>> GetAllProjects()
         {
             return await _db.Projects.ToListAsync();
 
         }
         
-        public async Task<IEnumerable<ToDoItem>> GetIncompleteTasks()
+        public async Task<IEnumerable<Project>> GetIncompleteProjects()
         {
-            return await _db.Tasks.Where(t => t.Status != Status.Done ).ToListAsync();
+            return await _db.Projects.Where(t => t.Status != ProjectStatus.Completed ).ToListAsync();
         }
-        public async Task<IEnumerable<ToDoItem>> GetCompleteTasks()
+        public async Task<IEnumerable<Project>> GetCompleteProjects()
         {
-            return await _db.Tasks.Where(t => t.Status == Status.Done).ToListAsync();
+            return await _db.Projects.Where(t => t.Status == ProjectStatus.Completed).ToListAsync();
         }
-        public async Task<IEnumerable<ToDoItem>> GetCurrentProjectTasks(int id)
+        public async Task<TasksOfProjectViewModel> GetCurrentProjectTasks(int id)
         {
-            return await _db.Tasks.Where(t => t.ProjectId == id).ToListAsync();
+            TasksOfProjectViewModel tvm = new TasksOfProjectViewModel()
+            {
+                Tasks = await _db.Tasks.Where(t => t.ProjectId == id).ToListAsync(),
+                Project = _db.Projects.FirstOrDefault(x => x.Id == id)
+            };
+            return tvm;
         }
-        public async Task<IEnumerable<ToDoItem>> GetMonthlyItems()
+
+        public async Task<Project> AddItemAsync(Project project)
         {
-            return await _db.Tasks
-                .Where(t => t.Status != Status.Done)
-                .ToListAsync();
-        }
-        public async Task<ToDoItem> AddItemAsync(ToDoItem task, int projectId)
-        {
-            task.Status = Status.ToDo;
-            task.ProjectId = projectId;
-            _db.Tasks.Add(task);
+            project.Status = ProjectStatus.NotStarted;
+            project.CreationTime = DateTime.Now;
+            _db.Projects.Add(project);
             await _db.SaveChangesAsync();
-            return task;
+            return project;
         }
         public async Task<bool> ChangeSatus(int id)
         {
-            var task = await _db.Tasks
+            var project = await _db.Projects
                 .FirstOrDefaultAsync(t => t.Id == id);
-            if (task == null) return false;
-            if (task.Status == Status.ToDo)
-                task.Status = Status.InProgress;
-            if (task.Status == Status.InProgress)
-                task.Status = Status.Done;
-            _db.Tasks.Update(task);
+            if (project == null) return false;
+            if (project.Status == ProjectStatus.NotStarted)
+                project.Status = ProjectStatus.Active;
+            if (project.Status == ProjectStatus.Active)
+                project.Status = ProjectStatus.Completed;
+            //Here is logic for reopen project, if smth has done wrong
+            if (project.Status == ProjectStatus.Completed)
+                project.Status = ProjectStatus.Active;
+            _db.Projects.Update(project);
             var saved = await _db.SaveChangesAsync();
             return saved == 1;
         }
         public async Task<bool> Delete(int id)
         {
-            var task = _db.Tasks.FirstOrDefault(x => x.Id == id);
-            if (task == null) return false;
-            if (task.Status == Status.InProgress || task.Status == Status.ToDo)
+            var project = _db.Projects.FirstOrDefault(x => x.Id == id);
+            if (project == null) return false;
+            if (project.Status == ProjectStatus.Active)
                 return false;
             else
             {
-                var project = _db.Projects.FirstOrDefault(x => x.Id == task.ProjectId);
-                _db.Tasks.Remove(task);
-                _db.Projects.Update(project);
+                _db.Projects.Remove(project);
                 var deleted = await _db.SaveChangesAsync();
                 return deleted == 1;
             }
         }
-        public async Task<bool> Update(int id, ToDoItem updatedTask)
+        public async Task<bool> Update(Project updatedProject)
         {
-            var task = _db.Tasks.FirstOrDefault(x => x.Id == id);
-            if (task != null && updatedTask != null)
+            var project = _db.Projects.FirstOrDefault(x => x.Id == updatedProject.Id);
+            if (project != null && updatedProject != null)
             {
-                task = updatedTask;
-                _db.Tasks.Update(task);
+                project = updatedProject;
+                _db.Projects.Update(project);
                 var updated = await _db.SaveChangesAsync();
                 return updated == 1;
             }
             else
                 return false;
         }
-        public ToDoItem Detail(int id)
+        public async Task<Project> Detail(int id)
         {
             try
             {
-                var task = _db.Tasks.FirstOrDefault(x => x.Id == id);
-                return task;
+                var project = await _db.Projects.FirstOrDefaultAsync(x => x.Id == id);
+                return project;
 
             }
             catch (Exception)
