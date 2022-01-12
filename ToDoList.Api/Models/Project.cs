@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace ToDoList.Api.Models
 {
+    //Determine the entity of Project
     public class Project
     {
         public int Id { get; set; }
@@ -14,6 +15,7 @@ namespace ToDoList.Api.Models
         public DateTime DueTime { get; set; }
         public ProjectStatus Status { get; set; }
     }
+    //Create enum of ProjectStatus
     public enum ProjectStatus
     {
         NotStarted,

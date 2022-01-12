@@ -11,7 +11,6 @@ namespace ToDoList.Api.Interfaces
         Task<IEnumerable<ToDoItem>> GetAllTasks();
         Task<IEnumerable<ToDoItem>> GetIncompleteTasks();
         Task<IEnumerable<ToDoItem>> GetCompleteTasks();
-        Task<IEnumerable<ToDoItem>> GetCurrentProjectTasks(int id);
         Task<ToDoItem> AddItemAsync(ToDoItem task, int projectId);
         Task<bool> ChangeSatus(int id);
         Task<bool> Delete(int id);

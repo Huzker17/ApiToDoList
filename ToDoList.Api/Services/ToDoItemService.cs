@@ -10,6 +10,7 @@ namespace ToDoList.Core.Services
 {
     public class ToDoItemService : IToDoItemService
     {
+        //Determine access to db from this service
         private readonly ApplicationDbContext _db;
 
         public ToDoItemService(ApplicationDbContext db)
@@ -22,25 +23,18 @@ namespace ToDoList.Core.Services
             return await _db.Tasks.ToListAsync();
 
         }
+        //Get All incompleted tasks from database
         
         public async Task<IEnumerable<ToDoItem>> GetIncompleteTasks()
         {
             return await _db.Tasks.Where(t => t.Status != Status.Done ).ToListAsync();
         }
+        //Get all completed tasks from database
         public async Task<IEnumerable<ToDoItem>> GetCompleteTasks()
         {
             return await _db.Tasks.Where(t => t.Status == Status.Done).ToListAsync();
         }
-        public async Task<IEnumerable<ToDoItem>> GetCurrentProjectTasks(int id)
-        {
-            return await _db.Tasks.Where(t => t.ProjectId == id).ToListAsync();
-        }
-        public async Task<IEnumerable<ToDoItem>> GetMonthlyItems()
-        {
-            return await _db.Tasks
-                .Where(t => t.Status != Status.Done)
-                .ToListAsync();
-        }
+        //Adding new task to database
         public async Task<ToDoItem> AddItemAsync(ToDoItem task, int projectId)
         {
             task.Status = Status.ToDo;
@@ -49,6 +43,7 @@ namespace ToDoList.Core.Services
             await _db.SaveChangesAsync();
             return task;
         }
+        //Changing status of task
         public async Task<bool> ChangeSatus(int id)
         {
             var task = await _db.Tasks
@@ -62,6 +57,7 @@ namespace ToDoList.Core.Services
             var saved = await _db.SaveChangesAsync();
             return saved == 1;
         }
+        //Deleting task from database
         public async Task<bool> Delete(int id)
         {
             var task = _db.Tasks.FirstOrDefault(x => x.Id == id);
@@ -77,6 +73,7 @@ namespace ToDoList.Core.Services
                 return deleted == 1;
             }
         }
+        //Updating task and project's task
         public async Task<bool> Update(int id, ToDoItem updatedTask)
         {
             var task = _db.Tasks.FirstOrDefault(x => x.Id == id);
@@ -90,6 +87,7 @@ namespace ToDoList.Core.Services
             else
                 return false;
         }
+        //View the task
         public ToDoItem Detail(int id)
         {
             try
