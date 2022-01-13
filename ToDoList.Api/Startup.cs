@@ -18,6 +18,7 @@ using Projects.Application;
 using System.Reflection;
 using Projects.Persistence;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace ToDoList.Api
 {
@@ -39,12 +40,9 @@ namespace ToDoList.Api
                 config.AddProfile(new AssemblyMappingProfile(typeof(IToDoListDbContext).Assembly));
             });
             services.AddApplication();
+            services.AddMvc();
             services.AddPersistence(Configuration);
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ToDoList", Version = "v1" });
-            }
-            );
+            services.AddSwaggerGen();
             services.AddCors(options=>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -65,15 +63,14 @@ namespace ToDoList.Api
             }
 
             app.UseRouting();
-            app.UseHttpsRedirection();
             app.UseCors("AllowAll");
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My ToDoList V1");
-            });
+            app.UseSwaggerUI();
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My ToDoList V1");
+            //});
 
-            app.UseAuthorization(); 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

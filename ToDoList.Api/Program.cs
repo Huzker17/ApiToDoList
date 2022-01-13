@@ -16,20 +16,6 @@ namespace ToDoList.Api
         public static void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-            using(var scope = host.Services.CreateScope())
-            {
-                var serviceProvide = scope.ServiceProvider;
-                try
-                {
-                    var context = serviceProvide.GetRequiredService<ApplicationDbContext>();
-                    DbInitializer.Initialize(context);
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
-            }
             host.Run();
         }
 

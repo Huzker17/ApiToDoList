@@ -12,10 +12,10 @@ namespace Projects.Persistence
     {
         public static IServiceCollection AddPersistence(this IServiceCollection services,IConfiguration configuration)
         {
-            var connectionString = configuration["DefaultConnection"];
+            string connection = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseNpgsql(connectionString);
+                options.UseNpgsql(connection, b => b.MigrationsAssembly("ToDoList.Api"));
             });
             services.AddScoped<IToDoListDbContext>(provider => provider.GetService<ApplicationDbContext>());
             return services;
