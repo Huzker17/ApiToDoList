@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Projects.Application.Projects.Queries.GetTasksList
 {
-    public class TaskLookupDto : IMapWith<TaskItem>
+    public class ProjectsTasksLookupDto : IMapWith<TaskItem>
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -16,7 +16,7 @@ namespace Projects.Application.Projects.Queries.GetTasksList
         public int Priority { get; set; }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<TaskLookupDto, TaskItem>()
+            profile.CreateMap<ProjectsTasksLookupDto, TaskItem>()
                 .ForMember(taskDto => taskDto.Id,
                         opt => opt.MapFrom(task => task.Id))
                 .ForMember(taskDto => taskDto.Title,

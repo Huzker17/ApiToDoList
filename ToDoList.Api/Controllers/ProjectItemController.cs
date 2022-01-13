@@ -5,6 +5,7 @@ using Projects.Application.Projects.Commands.DeleteProject;
 using Projects.Application.Projects.Commands.UpdateProject;
 using Projects.Application.Projects.Queries.GetProjectDetails;
 using Projects.Application.Projects.Queries.GetProjectList;
+using Projects.Application.Projects.Queries.GetTasksList;
 using Projects.Domain;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ using ToDoList.Api.Models;
 
 namespace ToDoList.Api.Controllers
 {
+    [Route("api/[controller]/[action]")]
     public class ProjectItemsController : BaseController
     {
         private readonly IMapper _mapper;
@@ -29,6 +31,16 @@ namespace ToDoList.Api.Controllers
             var query = new GetProjectListQuery();
             var vm = await Mediator.Send(query);
             return Ok(vm);
+        }
+        [HttpGet("{projectId}")]
+        public async Task<ActionResult<ProjectsTasksListVm>> GetTasks(Guid projectId)
+        {
+            var query = new GetTasksListQuery()
+            {
+                ProjectId = projectId
+            };
+            var projectsTasks = await Mediator.Send(query);
+            return Ok(projectsTasks);
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectItem>> Get(Guid id)

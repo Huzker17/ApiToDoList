@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Projects.Application.Projects.Queries.GetTasksList
 {
-    public class TasksListVm 
+    public class ProjectsTasksListVm 
     {
-        public IList<TaskLookupDto> Tasks { get; set; }
+        public IList<ProjectsTasksLookupDto> Tasks { get; set; }
 
     }
 }
