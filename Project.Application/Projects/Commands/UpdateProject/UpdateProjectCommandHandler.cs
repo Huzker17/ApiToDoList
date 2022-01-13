@@ -26,6 +26,7 @@ namespace Projects.Application.Projects.Commands.UpdateProject
             entity.Title = request.Title;
             entity.Priority = request.Priority;
             entity.Status = request.Status;
+            entity.CompletionDate = request.CompletionDate;
             _db.Projects.Update(entity);
             await _db.SaveChangesAsync(cancellationToken);
             return Unit.Value;

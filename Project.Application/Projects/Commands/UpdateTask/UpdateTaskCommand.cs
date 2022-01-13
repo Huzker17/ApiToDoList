@@ -4,14 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Projects.Application.Projects.Commands.UpdateProject
+namespace Projects.Application.Projects.Commands.UpdateTask
 {
-    public class UpdateProjectCommand : IRequest
+    public class UpdateTaskCommand : IRequest
     {
+        public Guid ProjectId { get; set; }
         public Guid Id { get; set; }
         public string Title { get; set; }
+        public TaskStatus Status {get;set;}
+        public string Description { get; set; }
         public int Priority { get; set; }
-        public ProjectStatus Status { get; set; } 
-        public DateTime? CompletionDate { get; set; }
     }
 }
