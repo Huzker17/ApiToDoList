@@ -10,7 +10,7 @@ using Projects.Persistence;
 namespace ToDoList.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220113195556_UpdatedSomeFields")]
+    [Migration("20220114161040_UpdatedSomeFields")]
     partial class UpdatedSomeFields
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
